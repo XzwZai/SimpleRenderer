@@ -20,13 +20,13 @@ struct Vertex
 class VAO
 {
 public:
-	float* VBuffer;
+	float* vBuffer;
 	int size;
 	vector<Vertex> vertexs;
 	//void BindBuffer(float* buffer, unsigned int _size, unsigned int flag) {};
 	void BindBuffer(float* buffer, unsigned int _size, unsigned int flag)
 	{
-		VBuffer = buffer;
+		vBuffer = buffer;
 		size = _size;
 		color = flag & V_COLOR;
 		normal = flag & V_NORMAL;
@@ -43,17 +43,17 @@ public:
 		int index = 0;
 		for (int i = 0; i < count; i++) {
 			Vertex v;
-			v.x = VBuffer[index++];
-			v.y = VBuffer[index++];
-			v.z = VBuffer[index++];
-			v.r = !color ? 0 : VBuffer[index++];
-			v.g = !color ? 0 : VBuffer[index++];
-			v.b = !color ? 0 : VBuffer[index++];
-			v.nx = !normal ? 0 : VBuffer[index++];
-			v.ny = !normal ? 0 : VBuffer[index++];
-			v.nz = !normal ? 0 : VBuffer[index++];
-			v.tx = !texture ? 0 : VBuffer[index++];
-			v.ty = !texture ? 0 : VBuffer[index++];
+			v.x = vBuffer[index++];
+			v.y = vBuffer[index++];
+			v.z = vBuffer[index++];
+			v.r = !color ? 0 : vBuffer[index++];
+			v.g = !color ? 0 : vBuffer[index++];
+			v.b = !color ? 0 : vBuffer[index++];
+			v.nx = !normal ? 0 : vBuffer[index++];
+			v.ny = !normal ? 0 : vBuffer[index++];
+			v.nz = !normal ? 0 : vBuffer[index++];
+			v.tx = !texture ? 0 : vBuffer[index++];
+			v.ty = !texture ? 0 : vBuffer[index++];
 			vertexs.push_back(v);
 		}
 	}
