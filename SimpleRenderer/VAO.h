@@ -11,6 +11,7 @@ struct Vertex
 	float r, g, b;
 	float nx, ny, nz;
 	float tx, ty;
+	float u, v;
 	string tostring()
 	{
 		return "(" + to_string(x) + " ," + to_string(y) + " ," + to_string(z) + " )";
@@ -54,8 +55,11 @@ public:
 			v.nz = !normal ? 0 : vBuffer[index++];
 			v.tx = !texture ? 0 : vBuffer[index++];
 			v.ty = !texture ? 0 : vBuffer[index++];
+			v.u = 0;
+			v.v = 0;
 			vertexs.push_back(v);
 		}
+		return true;
 	}
 
 	vector<Vertex> getvertexs() { return vertexs; }
