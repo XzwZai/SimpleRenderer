@@ -21,7 +21,7 @@ public:
 		return Vec3(x - v.x, y - v.y, z - v.z);
 	}
 
-	Vec3 operator * (const Vec3 v) const {
+	Vec3 operator * (const Vec3 v) {
 		return Vec3(x * v.x, y * v.y, z * v.z);
 	}
 
@@ -29,7 +29,7 @@ public:
 		return Vec3(x * f, y * f, z * f);
 	}
 
-	Vec3 operator / (const float f) const {
+	Vec3 operator / (const float f) {
 		return Vec3(x / f, y / f, z / f);
 	}
 
