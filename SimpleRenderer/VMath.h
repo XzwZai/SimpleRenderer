@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <math.h>
+class Vec3;
+typedef Vec3 Color;
 class Vec3
 {
 public:
@@ -54,3 +56,8 @@ public:
 		return "(" + std::to_string(x) + " ," + std::to_string(y) + " ," + std::to_string(z) + " )";
 	}
 };
+
+const Color BLACK = Color();
+const Color WHITE = Color(1.0f, 1.0f, 1.0f);
+const Color RED = Color(1.0f, 0.0f, 0.0f);
+const Color BLUE = Color(0.0f, 0.0f, 1.0f);
