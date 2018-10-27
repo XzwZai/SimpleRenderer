@@ -3,7 +3,6 @@
 #include "Window.h"
 #include <opencv2/opencv.hpp>
 using namespace std;
-using namespace cv;
 int main()
 {
 	float vertices[] = {
@@ -25,14 +24,18 @@ int main()
 
 	int width = 100, height = 100;
 	Window window(width, height);
-	window.drawLine(50, 50, 110, 90, RED, WHITE);
-	window.drawLine(50, 100, 110, 60, RED, WHITE);
-	window.drawLine(0, 0, 0, 60, RED, WHITE);
-	for (int i = 10; i < 50; i++) {		
-		window.drawLine(10, i, 50 - i, i,RED,BLUE);
-	}
+	/*window.drawLine(50, 50, 110, 90, RED, WHITE);
+	window.drawLine(50, 100, 110, 60, RED, WHITE);*/
+	/*window.drawLine(0, 0, 60, 1000, RED, WHITE);
+	window.drawLine(0, 0, 60, 60, RED, WHITE);*/
+	
+	Vertex v0; v0.clip_pos = Pos(0, 0, 0); v0.color = Color(1, 0, 0);
+	Vertex v1; v1.clip_pos = Pos(1, 1, 0); v1.color = Color(0, 1, 0);
+	Vertex v2; v2.clip_pos = Pos(1, 0, 0); v2.color = Color(0, 0, 1);
+	//window.AntiClockTriangle(v0, v1, v2);
+	window.drawTriangle(v0, v1, v2);
 	int *frame = window.frameBuffer;
-	Mat M(height, width, CV_8UC3);
+	cv::Mat M(height, width, CV_8UC3);
 	for (int r = 0; r < height; r++) {
 		uchar *p = M.ptr(r);
 		for (int c = 0; c < width; c++) {
@@ -44,6 +47,9 @@ int main()
 			p[c * 3 + 2] = frame[(r*width + c) * 3];
 		}
 	}
+
+	
+
 	imshow("1", M);
-	waitKey(0);
+	cv::waitKey(0);
 }

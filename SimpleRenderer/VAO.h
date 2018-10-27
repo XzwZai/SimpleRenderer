@@ -1,20 +1,21 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "VMath.h"
 #define V_COLOR		1 << 2
 #define V_NORMAL	1 << 1
 #define V_TEX		1 << 0
 using namespace std;
 struct Vertex
 {
-	float x, y, z;
-	float r, g, b;
-	float nx, ny, nz;
+	Pos world_pos;
+	Color color;
+	Normal normal;
+	Pos clip_pos;
 	float tx, ty;
-	float u, v;
 	string tostring()
 	{
-		return "(" + to_string(x) + " ," + to_string(y) + " ," + to_string(z) + " )";
+		return world_pos.toString();
 	}
 };
 
@@ -44,19 +45,12 @@ public:
 		int index = 0;
 		for (int i = 0; i < count; i++) {
 			Vertex v;
-			v.x = vBuffer[index++];
-			v.y = vBuffer[index++];
-			v.z = vBuffer[index++];
-			v.r = !color ? 0 : vBuffer[index++];
-			v.g = !color ? 0 : vBuffer[index++];
-			v.b = !color ? 0 : vBuffer[index++];
-			v.nx = !normal ? 0 : vBuffer[index++];
-			v.ny = !normal ? 0 : vBuffer[index++];
-			v.nz = !normal ? 0 : vBuffer[index++];
+			v.world_pos = Pos(vBuffer[index++], vBuffer[index++], vBuffer[index++]);
+			v.color = Color(!color ? 0 : vBuffer[index++], !color ? 0 : vBuffer[index++], !color ? 0 : vBuffer[index++]);
+			v.normal = Normal(!normal ? 0 : vBuffer[index++], !normal ? 0 : vBuffer[index++], !normal ? 0 : vBuffer[index++]);
 			v.tx = !texture ? 0 : vBuffer[index++];
 			v.ty = !texture ? 0 : vBuffer[index++];
-			v.u = 0;
-			v.v = 0;
+			v.clip_pos = Pos();
 			vertexs.push_back(v);
 		}
 		return true;
