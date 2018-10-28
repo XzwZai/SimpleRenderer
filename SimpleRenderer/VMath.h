@@ -7,6 +7,29 @@ class Vec4;
 typedef Vec3 Color;
 typedef Vec3 Pos;
 typedef Vec3 Normal;
+class Vec2
+{
+public:
+	float x, y;
+	Vec2() : x(0.0f), y(0.0f) { }
+	Vec2(float _x, float _y) { x = _x; y = _y; }		
+	Vec2(const Vec2 &u) : x(u.x), y(u.y) { }
+	inline Vec2& operator = (const Vec2 &u) { x = u.x; y = u.y; return *this; }
+	inline Vec2 operator - () { return Vec2(-x, -y); }
+	friend inline Vec2 operator + (const Vec2 &u, double num) { return Vec2(u.x + num, u.y + num); }
+	friend inline Vec2 operator + (double num, const Vec2 &u) { return Vec2(num + u.x, num + u.y); }
+	friend inline Vec2 operator + (const Vec2 &u, const Vec2 &v) { return Vec2(u.x + v.x, u.y + v.y); }
+	friend inline Vec2 operator - (const Vec2 &u, double num) { return Vec2(u.x - num, u.y - num); }
+	friend inline Vec2 operator - (double num, const Vec2 &u) { return Vec2(num - u.x, num - u.y); }
+	friend inline Vec2 operator - (const Vec2 &u, const Vec2 &v) { return Vec2(u.x - v.x, u.y - v.y); }
+	friend inline Vec2 operator * (const Vec2 &u, double num) { return Vec2(u.x * num, u.y * num); }
+	friend inline Vec2 operator * (double num, const Vec2 &u) { return Vec2(num * u.x, num * u.y); }
+	friend inline Vec2 operator * (const Vec2 &u, const Vec2 &v) { return Vec2(u.x * v.x, u.y * v.y); }
+	friend inline Vec2 operator / (const Vec2 &u, double num) { return Vec2(u.x / num, u.y / num); }
+	friend inline Vec2 operator / (double num, const Vec2 &u) { return Vec2(num / u.x, num / u.y); }
+	friend inline Vec2 operator / (const Vec2 &u, const Vec2 &v) { return Vec2(u.x / v.x, u.y / v.y); }
+};
+
 class Vec3
 {
 public:

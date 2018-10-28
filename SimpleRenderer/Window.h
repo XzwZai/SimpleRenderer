@@ -6,6 +6,7 @@
 #define DRAW_TRIANGLES 2
 #define u2x(u) round((u + 1) * width / 2)
 #define v2y(v) round((1 - v) * height / 2)
+
 class Window
 {
 public:

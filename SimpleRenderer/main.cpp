@@ -1,9 +1,7 @@
 #include <iostream>
-#include "VAO.h"
-#include "Window.h"
-#include "Camera.h"
 #include "Renderer.h"
 #include <opencv2/opencv.hpp>
+
 using namespace std;
 int main()
 {

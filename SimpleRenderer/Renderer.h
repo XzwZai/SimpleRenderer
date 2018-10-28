@@ -1,7 +1,8 @@
 #pragma once
-#include "VAO.h"
 #include "Camera.h"
 #include "Window.h"
+#include <opencv2/opencv.hpp>
+
 class Renderer
 {
 public:
