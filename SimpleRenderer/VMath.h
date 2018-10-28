@@ -3,6 +3,7 @@
 #include <math.h>
 #define PI 3.1415926
 class Vec3;
+class Vec4;
 typedef Vec3 Color;
 typedef Vec3 Pos;
 typedef Vec3 Normal;
@@ -68,10 +69,10 @@ public:
 class Vec4
 {
 public:
-	float x, y, z, a;
-	Vec4() { x = y = z = 0; a = 1; }
-	Vec4(float _x, float _y, float _z, float _a) { x = _x; y = _y; z = _z; a = _a; }
-	Vec4(Vec3 v, float _a) { x = v.x; y = v.y; z = v.z; a = _a; }
+	float x, y, z, w;
+	Vec4() { x = y = z = 0; w = 1; }
+	Vec4(float _x, float _y, float _z, float _a) { x = _x; y = _y; z = _z; w = _a; }
+	Vec4(Vec3 v, float _a) { x = v.x; y = v.y; z = v.z; w = _a; }
 
 };
 
@@ -296,7 +297,8 @@ public:
 
 	friend inline Vec3 operator * (const Mat4 &Mat4, const Vec3 &Vector)
 	{
-		return Mat4 * Vec4(Vector, 0.0f);
+		Vec4 v = Mat4 * Vec4(Vector, 0.0f);
+		return Vec3(v.x,v.y,v.z);
 	}
 
 	friend inline Vec4 operator * (const Mat4 &Mat4, const Vec4 &Vector)
@@ -310,12 +312,22 @@ public:
 	}
 };
 
-Mat4 transformMat(int x, int y, int z)
+Mat4 translationMat(int x, int y, int z)
 {
 	Mat4 m;
 	m.mat[12] = x;
 	m.mat[13] = y;
 	m.mat[14] = z;
+	return m;
+}
+
+Mat4 translationMat(Vec3 v)
+{
+	Mat4 m;
+	m.mat[12] = v.x;
+	m.mat[13] = v.y;
+	m.mat[14] = v.z;
+	return m;
 }
 
 float max(float a, float b) {
