@@ -1,20 +1,19 @@
 #pragma once
 #include "Camera.h"
 #include "Window.h"
-#include <opencv2/opencv.hpp>
 
 class Renderer
 {
 public:
 	Camera camera;	
-	Window window;
+	Window window;	
 	Renderer(Camera _camera,Window _window)
 	{
 		camera = _camera;
 		window = _window;
 	}
 
-	void render(VAO vao,Mat4 model,int flag = DRAW_TRIANGLES)
+	void render(VAO vao,Mat4 model,int flag = DRAW_TRIANGLES,Texture *texture = NULL)
 	{
 		vector<Vertex>& vec = vao.vertexs;		
 		for (vector<Vertex>::iterator it = vec.begin(); it != vec.end(); it++) {
@@ -22,7 +21,12 @@ public:
 			Vec4 v = camera.projection * v1;
 			(*it).clip_pos = Vec3(v.x / v.w, v.y / v.w, v.z / v.w);
 		}
-		window.drawVAO(vao, flag);
+		window.drawVAO(vao, flag, texture);
+	}
+
+	void clear()
+	{
+		window.clear();
 	}
 
 };

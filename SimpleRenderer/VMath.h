@@ -353,29 +353,29 @@ Mat4 translationMat(Vec3 v)
 	return m;
 }
 
-float max(float a, float b) {
+float Vmax(float a, float b) {
 	return a > b ? a : b;
 }
 
-float min(float a, float b) {
+float Vmin(float a, float b) {
 	return a < b ? a: b;
 }
 
-float max(float a, float b, float c) {
+float Vmax(float a, float b, float c) {
 	if (a > b) {
-		return max(a, c);
+		return Vmax(a, c);
 	}
 	else {
-		return max(b, c);
+		return Vmax(b, c);
 	}
 }
 
-float min(float a, float b, float c) {
+float Vmin(float a, float b, float c) {
 	if (a < b) {
-		return min(a, c);
+		return Vmin(a, c);
 	}
 	else {
-		return min(b, c);
+		return Vmin(b, c);
 	}
 }
 

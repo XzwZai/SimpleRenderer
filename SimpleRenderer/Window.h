@@ -1,18 +1,19 @@
 #pragma once
 #include "VAO.h"
 #include "VMath.h"
+#include "Texture.h"
+#include <opencv2/opencv.hpp>
 #define MaxZ 1.0f
 #define DRAW_POINTS 1
 #define DRAW_TRIANGLES 2
 #define u2x(u) round((u + 1) * width / 2)
 #define v2y(v) round((1 - v) * height / 2)
-
 class Window
 {
 public:
 	int width, height, channel;
-	Color bgColor;	
-	float* frameBuffer;
+	Color bgColor;
+	float* frameBuffer;	
 	Window() {}
 	Window(int _width, int _height,int _channel = 3,Color _bgColor = Color()) {
 		width = _width;
@@ -50,18 +51,40 @@ public:
 		return t;
 	}	
 
+	void clear()
+	{
+		for (int i = 0; i < width * height; i++) {
+			frameBuffer[i * (channel + 1)] = bgColor.x;
+			frameBuffer[i * (channel + 1) + 1] = bgColor.y;
+			frameBuffer[i * (channel + 1) + 2] = bgColor.z;
+			frameBuffer[i * (channel + 1) + 3] = MaxZ;
+		}
+	}
+
+	void display()
+	{
+		cv::Mat M(height, width, CV_8UC3);
+		for (int r = 0; r < height; r++) {
+			uchar *p = M.ptr(r);
+			for (int c = 0; c < width; c++) {
+				p[c * 3] = frameBuffer[(r*width + c) * 4 + 2];
+				p[c * 3 + 1] = frameBuffer[(r*width + c) * 4 + 1];
+				p[c * 3 + 2] = frameBuffer[(r*width + c) * 4];
+			}
+		}
+		imshow("1", M);
+		cv::waitKey(10);
+	}
+
 	void drawPoint(int x,int y,float z,Color c) 
-	{		
-		
+	{				
 		if (isInWindow(x, y)) {
 			int baseIndex = (y * width + x) * (channel + 1);
 			if (z < frameBuffer[baseIndex + 3]) {
 				frameBuffer[baseIndex] = cvtColor(c.x); frameBuffer[baseIndex + 1] = cvtColor(c.y); frameBuffer[baseIndex + 2] = cvtColor(c.z);
 				frameBuffer[baseIndex + 3] = z;
 			}
-		}
-		
-		
+		}				
 	}
 
 	void drawLine(int x0,int y0,float z0,int x1,int y1,float z1,Color c0,Color c1) {
@@ -183,26 +206,36 @@ public:
 		}
 	}
 
-	void drawTriangle(Vertex v0, Vertex v1, Vertex v2) 
+	void drawTriangle(Vertex v0, Vertex v1, Vertex v2,Texture* texture = NULL) 
 	{
 		AntiClockTriangle(v0, v1, v2);
 		int x0 = u2x(v0.clip_pos.x), y0 = v2y(v0.clip_pos.y), x1 = u2x(v1.clip_pos.x), y1 = v2y(v1.clip_pos.y), x2 = u2x(v2.clip_pos.x), y2 = v2y(v2.clip_pos.y);
 		float z0 = v0.clip_pos.z, z1 = v1.clip_pos.z, z2 = v2.clip_pos.z;
+		Vec2 t_pos0 = v0.tex_pos, t_pos1 = v1.tex_pos, t_pos2 = v2.tex_pos;
 		Color color0 = v0.color, color1 = v1.color, color2 = v2.color;
-		int maxX = max(x0, x1, x2), maxY = max(y0, y1, y2), minX = min(x0, x1, x2), minY = min(y0, y1, y2);
+		int maxX = Vmax(x0, x1, x2), maxY = Vmax(y0, y1, y2), minX = Vmin(x0, x1, x2), minY = Vmin(y0, y1, y2);
 		for (int y = minY; y <= maxY; y++) {
 			for (int x = minX; x <= maxX; x++) {
 				float sigma0 = (float)((y1 - y2)*(x - x2) + (x2 - x1)*(y - y2)) / ((y1 - y2)*(x0 - x2) + (x2 - x1)*(y0 - y2));
 				float sigma1 = (float)((y2 - y0)*(x - x2) + (x0 - x2)*(y - y2)) / ((y1 - y2)*(x0 - x2) + (x2 - x1)*(y0 - y2));
 				float sigma2 = 1 - sigma0 - sigma1;
+				
 				if (sigma0 >= 0 && sigma0 <= 1 && sigma1 >= 0 && sigma1 <= 1 && sigma2 >= 0 && sigma2 <= 1) {
-					drawPoint(x, y, z0 * sigma0 + z1 * sigma1 + z2 * sigma2, color0 * sigma0 + color1 * sigma1 + color2 * sigma2);
+					Color color;
+					if (texture == NULL) {
+						color = color0 * sigma0 + color1 * sigma1 + color2 * sigma2;
+					}
+					else {
+						Vec2 t_pos = t_pos0 * sigma0 + t_pos1 * sigma1 + t_pos2 * sigma2;
+						color = texture->getColor(t_pos);
+					}
+					drawPoint(x, y, z0 * sigma0 + z1 * sigma1 + z2 * sigma2, color);
 				}
 			}
 		}
 	}
 
-	void drawVAO(VAO vao,int flag)
+	void drawVAO(VAO vao,int flag, Texture* texture = NULL)
 	{
 		if (flag == DRAW_TRIANGLES) {
 			if (vao.vertexs.size() % 3 != 0) {
@@ -212,7 +245,7 @@ public:
 				Vertex v0 = *it; it++;
 				Vertex v1 = *it; it++;
 				Vertex v2 = *it;
-				drawTriangle(v0, v1, v2);
+				drawTriangle(v0, v1, v2, texture);
 			}
 		}
 		else if (flag == DRAW_POINTS) {
